@@ -42,8 +42,8 @@ public struct PhotosWatchface {
     }
 }
 
-extension PhotosWatchface {
-    public init?(watchface: Watchface) {
+public extension PhotosWatchface {
+    init?(watchface: Watchface) {
         guard let position = Position(rawValue: watchface.face.customization.position ?? ""),
               let resources = watchface.resources else { return nil }
         self.init(
@@ -55,37 +55,50 @@ extension PhotosWatchface {
                 Complication(name: watchface.metadata.complications_names.top ?? "Off",
                              template: $0,
                              faceItem: watchface.face.complications?.top,
-                             data: watchface.complicationData?.top)},
+                             data: watchface.complicationData?.top)
+            }!,
             bottomComplication: watchface.metadata.complication_sample_templates.bottom.map {
                 Complication(name: watchface.metadata.complications_names.bottom ?? "Off",
                              template: $0,
                              faceItem: watchface.face.complications?.bottom,
-                             data: watchface.complicationData?.bottom)},
-            resources: resources)
+                             data: watchface.complicationData?.bottom)
+            },
+            resources: resources
+        )
     }
 }
 
-extension Watchface {
-    public init(photosWatchface photos: PhotosWatchface) {
+public extension Watchface {
+    init(photosWatchface photos: PhotosWatchface) {
         self.init(
             metadata: .init(
                 complication_sample_templates: .init(
                     top: photos.topComplication?.template,
-                    bottom: photos.bottomComplication?.template),
-                complications_names:.init(
-                    top: photos.topComplication?.name,
-                    bottom: photos.bottomComplication?.name),
+                    bottom: photos.bottomComplication?.template
+                ),
+                complications_names: .init(
+                    top: photos.topComplication?.name ?? "Off",
+                    bottom: photos.bottomComplication?.name ?? "Off"
+                ),
                 complications_item_ids: .init(),
-                complications_bundle_ids: nil),
+                complications_bundle_ids: .init(
+                    top: "com.apple.nanotimekit.off",
+                    bottom: "com.apple.nanotimekit.off"
+                )
+            ),
             face: .init(
                 face_type: .photos,
                 resource_directory: true,
                 customization: .init(color: "none", content: "custom", position: photos.position.rawValue),
-                complications: .init(top: photos.topComplication?.faceItem, bottom: photos.bottomComplication?.faceItem)),
+                complications: .init(top: photos.topComplication?.faceItem, bottom: photos.bottomComplication?.faceItem),
+                analyticsID: "photos"
+            ),
             snapshot: photos.snapshot,
             no_borders_snapshot: photos.no_borders_snapshot,
             resources: photos.resources,
-            complicationData: [photos.topComplication?.data, photos.bottomComplication?.data].compactMap {$0}.isEmpty ? nil : .init(
-                top: photos.topComplication?.data, bottom: photos.bottomComplication?.data))
+            complicationData: [photos.topComplication?.data, photos.bottomComplication?.data].compactMap { $0 }.isEmpty ? nil : .init(
+                top: photos.topComplication?.data, bottom: photos.bottomComplication?.data
+            )
+        )
     }
 }

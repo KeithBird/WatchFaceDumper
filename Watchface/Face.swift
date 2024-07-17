@@ -1,7 +1,7 @@
 import Foundation
 
-extension Watchface {
-    public struct Face: Codable {
+public extension Watchface {
+    struct Face: Codable {
         public var version: Int = 4
         public var face_type: FaceType
         /// non-nil when face type = bundle
@@ -136,7 +136,16 @@ extension Watchface {
             }
         }
 
-        public init(version: Int = 4, face_type: FaceType, bundle_id: BundleID? = nil, resource_directory: Bool? = true, customization: Customization, complications: Complications? = nil, argon: Argon? = nil) {
+        public init(
+            version: Int = 4,
+            face_type: FaceType,
+            bundle_id: BundleID? = nil,
+            resource_directory: Bool? = true,
+            customization: Customization,
+            complications: Complications? = nil,
+            argon: Argon? = nil,
+            analyticsID: String? = nil
+        ) {
             self.version = version
             self.face_type = face_type
             self.bundle_id = bundle_id
@@ -144,6 +153,7 @@ extension Watchface {
             self.customization = customization
             self.complications = complications
             self.argon = argon
+            self.analytics_id = analyticsID
         }
     }
 }
