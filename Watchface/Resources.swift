@@ -80,6 +80,8 @@ extension Watchface {
                 public var bottomAnalysis: Analysis?
                 /// photos has some, kaleidoscope has none
                 public var rightAnalysis: Analysis?
+                public var slowAnalysis: Analysis?
+                public var fastAnalysis: Analysis?
                 
                 public var imageURL: String
                 
